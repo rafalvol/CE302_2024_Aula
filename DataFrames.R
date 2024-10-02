@@ -249,5 +249,16 @@ minha_lista$vetor
 minha_lista$lista_aninhada
 #minha_lista$matriz$data_frame
 
-minha_lista[[2]]
-minha_lista[[3]]
+# Acessar elementos da lista
+
+elemento1 <- minha_lista[[1]]  # Acessar o primeiro elemento
+
+elemento2 <- minha_lista$data_frame  # Acessar o data frame
+
+elemento3 <- minha_lista$lista_aninhada$vetor_aninhado  # Acessar o vetor aninhado
+
+# Adicionar elementos a uma lista
+
+minha_lista$nova_lista <- list(novo_vetor = c(1, 2, 3), nova_matriz = matrix(1:4, nrow = 2))
+
+minha_lista
