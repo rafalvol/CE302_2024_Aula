@@ -136,7 +136,7 @@ write.csv(Queimadas, "~/Documentos/ProjetoCE302_2024/CE302_2024_Aula/Data/Queima
 # Imprima na tela as 9 primeiras observações.
 head(Queimadas, 9)
 # Imprima as últimas 3 observações.
-tail(Queimadas, 3)
+tail(Queimadas, n=3)
 # Quantas observações temos?
 nrow(Queimadas)
 # Quantas variáveis temos?
@@ -146,6 +146,108 @@ summary(Queimadas)
 # Apresente a estrutura dos dados.
 str(Queimadas)
 # Quantos biomas estão sendo afetados?
-
+unique(Queimadas$bioma)
+lenght(unique(Queimadas$bioma))
+Queimadas$bioma = factor((Queimadas$bioma))
+nlevels(Queimadas$bioma)
+levels(Queimadas$bioma)
 # Qual a média de avg_numero_dias_sem_chuva para os estados da região sul e da região norte?
+sul = subset(Queimadas, estado == "PARANÁ" | estado == "SANTA CATARINA" | estado == "RIO GRANDE DO SUL")
+mean(sul$avg_numero_dias_sem_chuva)
+summary(sul)
+dim(sul)
+r_sul = toupper(c("paraná", "Santa Catarina", "rio grande do sul"))
+r_norte = toupper(c("amazonas", "amapá", "roraima", "acre", "rondônia"))
+Queimadas_sul = subset(Queimadas, estado %in% r_sul)
+mean(Queimadas_sul$avg_numero_dias_sem_chuva)
 
+#### DATA.TABLE
+require(data.table)
+library(data.table)
+# Criar um data.table
+meu_data_table <- data.table(
+  nome = c("Alice", "Bob", "Carol", "Ana", "João", "Carlos", "Patrícia", "Leonardo"),
+  idade = c(25, 30, 28, 20, 27, 50, 60, 45),
+  salario = c(5000, 6000, 5500, 8000, 2000, 3500, 10000, 3800 ), 
+  meio_de_transporte = c('onibus', 'bicicleta', 'onibus', 'carro', 'carro', 'onibus', 'onibus', 'bicicleta'))
+meu_data_table
+
+class(meu_data_table)
+# Queimadas = fread("~/Documentos/ProjetoCE302_2024/CE302_2024_Aula/Data/Queimadas.csv")
+system.time(fread("~/Documentos/ProjetoCE302_2024/CE302_2024_Aula/Data/Queimadas.csv"))
+
+# Selecionar colunas e filtrar linhas
+resultado <- meu_data_table[idade > 25, .(nome, salario)]
+resultado
+
+# Agregar dados 
+agregado <- meu_data_table[, .(media_salario = mean(salario)),]
+agregado
+
+# Agregar dados por meio de transporte
+agregado_idade <- meu_data_table[, .(media_salario = mean(salario)), by = meio_de_transporte]
+agregado_idade
+
+#### TIBBLE
+require(tibble)
+require(magrittr)
+require(dplyr)
+meu_tibble <- tibble(
+  nome = c("Alice", "Bob", "Carol", "Ana", "João", "Carlos", "Patrícia", "Leonardo"),
+  idade_anos = c(25, 30, 28, 20, 27, 50, 60, 45),
+  salario = c(5000, 6000, 5500, 8000, 2000, 3500, 10000, 3800 ), 
+  `meio de transporte` = c('onibus', 'bicicleta', 'onibus', 'carro', 'carro', 'onibus', 'onibus', 'bicicleta'))
+meu_tibble
+
+str(meu_tibble)
+glimpse(meu_tibble)
+
+meu_tibble$nova_coluna <- c(1, 2, 3, 4, 5, 6, 7, 8)
+meu_tibble
+
+meu_tibble <- mutate(meu_tibble, `minha coluna` = 1:8)
+meu_tibble <- rename(meu_tibble, idade = idade_anos)
+meu_tibble
+
+meu_tibble_sem_salario <- select(meu_tibble, -salario)
+meu_tibble_sem_salario
+meu_tibble_com_salario <- select(meu_tibble, salario)
+meu_tibble_com_salario
+
+salario = pull(meu_tibble, salario)
+salario
+
+# Filtrar e ordenar
+resultado <- filter(meu_tibble, idade > 25) 
+arrange(resultado, desc(salario)) # para ascendente só colocar salario
+
+# Agregar por meio de transporte e calcular média de salários
+agregado_por_transporte <-  group_by(meu_tibble, `meio de transporte`) 
+agregado_por_transporte
+summarize(agregado_por_transporte, media_salario = mean(salario))
+
+
+#### LISTAS
+## Agregado de qualquer tipo de dados de interesse. Não tem estrutura tabular
+# Exemplo de criação de lista
+minha_lista <- list(
+  vetor = c(1, 2, 3, 4, 5),
+  matriz = matrix(1:9, nrow = 3),
+  data_frame = data.frame(
+    nome = c("Alice", "Bob", "Carol"),
+    idade = c(25, 30, 28)
+  ),
+  lista_aninhada = list(
+    vetor_aninhado = c(10, 20, 30),
+    matriz_aninhada = matrix(1:4, nrow = 2)
+  )
+)
+minha_lista
+
+minha_lista$data_frame
+minha_lista$vetor
+minha_lista$lista_aninhada
+#minha_lista$matriz$data_frame
+
+minha_lista[[2]]
+minha_lista[[3]]
