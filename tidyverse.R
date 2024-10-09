@@ -120,3 +120,5 @@ vars_interesse = c("automovel",
                    "canoa")
 car_crash %>% 
   select(n_of(vars_interesse))
+
+# outra aula
